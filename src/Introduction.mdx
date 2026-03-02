@@ -1,0 +1,92 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction" />
+
+# Swiper Carousel Web Component
+
+A fully-featured, accessible carousel web component built with **Lit** and **Swiper.js**.
+
+## Features
+
+- ✨ **Built with Lit** - Modern web components powered by Lit
+- 🎠 **Swiper.js Integration** - Professional carousel functionality
+- ♿ **Accessible** - Full ARIA attribute support for screen readers
+- 📱 **Responsive** - Configurable breakpoints for different screen sizes
+- ⌨️ **Keyboard Navigation** - Arrow key support (when focused)
+- 🎨 **Customizable** - Style with CSS custom properties
+- 🔄 **Loop Mode** - Infinite carousel looping
+- ⏱️ **Auto-play** - Optional automatic slide advancement
+- 🧩 **Flexible** - Use any web component or HTML as carousel items
+
+## Components
+
+This library includes two main components:
+
+### `<swiper-carousel>`
+The main carousel container that provides navigation, pagination, and all carousel functionality.
+
+### `<carousel-item>`
+An example item component that can be used inside the carousel. You can create your own custom components too!
+
+## Quick Start
+
+```html
+<swiper-carousel>
+  <div class="swiper-slide">
+    <carousel-item
+      icon="🚀"
+      title="Item 1"
+      description="First carousel item"
+    ></carousel-item>
+  </div>
+  <div class="swiper-slide">
+    <carousel-item
+      icon="⚡"
+      title="Item 2"
+      description="Second carousel item"
+    ></carousel-item>
+  </div>
+</swiper-carousel>
+```
+
+## Usage with Autoplay
+
+```html
+<swiper-carousel autoplay="3000" loop>
+  <!-- slides -->
+</swiper-carousel>
+```
+
+## Responsive Breakpoints
+
+```html
+<swiper-carousel 
+  slides-per-view="1"
+  breakpoints='{"640": 2, "768": 3, "1024": 4}'
+>
+  <!-- slides -->
+</swiper-carousel>
+```
+
+## Keyboard Navigation
+
+To use keyboard navigation:
+1. Click on the carousel or press Tab to focus it
+2. Use arrow keys (← →) to navigate
+3. Only the focused carousel responds to keyboard input
+
+## CSS Custom Properties
+
+```css
+swiper-carousel {
+  --swiper-navigation-color: #007aff;
+  --swiper-navigation-bg: rgba(255, 255, 255, 0.9);
+  --swiper-navigation-size: 44px;
+  --swiper-pagination-color: #007aff;
+  --swiper-focus-color: #007aff;
+}
+```
+
+## Explore the Stories
+
+Use the navigation on the left to explore different configurations and examples of the carousel components.

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autoplay Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f5f5f5;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .test-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .indicator {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .indicator.active {
+      background: #c8e6c9;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    swiper-carousel {
+      margin: 20px 0;
+    }
+
+    .swiper-slide {
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+
+    .slide-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .slide-2 { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .slide-3 { background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); }
+    .slide-4 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #1976d2;
+    }
+
+    .info {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>⏱️ Autoplay Test</h1>
+
+  <div class="test-section">
+    <h2>Test 1: Autoplay Every 2 Seconds</h2>
+    <div class="info">
+      <strong>Expected behavior:</strong> Carousel should automatically advance to the next slide every 2 seconds.
+    </div>
+    
+    <swiper-carousel id="carousel1" autoplay="2000" loop>
+      <div class="swiper-slide slide-1">Slide 1</div>
+      <div class="swiper-slide slide-2">Slide 2</div>
+      <div class="swiper-slide slide-3">Slide 3</div>
+      <div class="swiper-slide slide-4">Slide 4</div>
+    </swiper-carousel>
+
+    <div class="indicator" id="indicator1">
+      Waiting for autoplay...
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Test 2: Autoplay with Manual Control</h2>
+    <div class="info">
+      <strong>Expected behavior:</strong> Autoplay every 3 seconds. You can manually navigate and autoplay will continue after interaction.
+    </div>
+    
+    <swiper-carousel id="carousel2" autoplay="3000" loop>
+      <div class="swiper-slide slide-1">🌅 Morning</div>
+      <div class="swiper-slide slide-2">☀️ Afternoon</div>
+      <div class="swiper-slide slide-3">🌆 Evening</div>
+      <div class="swiper-slide slide-4">🌙 Night</div>
+    </swiper-carousel>
+
+    <div class="controls">
+      <button onclick="document.getElementById('carousel2').prev()">⬅️ Previous</button>
+      <button onclick="document.getElementById('carousel2').next()">Next ➡️</button>
+    </div>
+
+    <div class="indicator" id="indicator2">
+      Waiting for autoplay...
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Test 3: No Autoplay (Control)</h2>
+    <div class="info">
+      <strong>Expected behavior:</strong> No autoplay. Manual navigation only.
+    </div>
+    
+    <swiper-carousel id="carousel3" autoplay="0">
+      <div class="swiper-slide slide-1">A</div>
+      <div class="swiper-slide slide-2">B</div>
+      <div class="swiper-slide slide-3">C</div>
+    </swiper-carousel>
+
+    <div class="indicator">
+      No autoplay configured ✓
+    </div>
+  </div>
+
+  <script type="module">
+    import './src/index.ts';
+
+    let changeCount1 = 0;
+    let changeCount2 = 0;
+
+    customElements.whenDefined('swiper-carousel').then(() => {
+      console.log('✓ Carousel component loaded');
+
+      const carousel1 = document.getElementById('carousel1');
+      const indicator1 = document.getElementById('indicator1');
+      const carousel2 = document.getElementById('carousel2');
+      const indicator2 = document.getElementById('indicator2');
+
+      // Monitor carousel 1
+      carousel1.addEventListener('slideChange', (e) => {
+        changeCount1++;
+        indicator1.textContent = `✅ Autoplay working! Slide changes: ${changeCount1} | Current slide: ${e.detail.activeIndex + 1}`;
+        indicator1.className = 'indicator active';
+        
+        console.log(`Carousel 1 changed to slide ${e.detail.activeIndex + 1}`);
+      });
+
+      // Monitor carousel 2
+      carousel2.addEventListener('slideChange', (e) => {
+        changeCount2++;
+        indicator2.textContent = `✅ Autoplay working! Slide changes: ${changeCount2} | Current slide: ${e.detail.activeIndex + 1}`;
+        indicator2.className = 'indicator active';
+        
+        console.log(`Carousel 2 changed to slide ${e.detail.activeIndex + 1}`);
+      });
+
+      // Check autoplay configuration after initialization
+      setTimeout(() => {
+        console.log('Carousel 1 autoplay config:', carousel1.swiper?.params?.autoplay);
+        console.log('Carousel 2 autoplay config:', carousel2.swiper?.params?.autoplay);
+        console.log('Carousel 3 autoplay config:', document.getElementById('carousel3').swiper?.params?.autoplay);
+      }, 500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Carousel Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f0f0f0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    swiper-carousel {
+      margin: 20px 0;
+    }
+
+    .swiper-slide {
+      height: 300px;
+    }
+
+    carousel-item {
+      --item-bg-color: #e3f2fd;
+      --item-title-color: #1565c0;
+    }
+
+    carousel-item:nth-child(2) {
+      --item-bg-color: #f3e5f5;
+      --item-title-color: #6a1b9a;
+    }
+
+    carousel-item:nth-child(3) {
+      --item-bg-color: #e8f5e9;
+      --item-title-color: #2e7d32;
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #1565c0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #0d47a1;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff3cd;
+      border-radius: 6px;
+      border-left: 4px solid #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎠 Carousel Test</h1>
+    
+    <p>Testing the Swiper carousel component with Lit:</p>
+
+    <swiper-carousel id="testCarousel">
+      <div class="swiper-slide">
+        <carousel-item
+          icon="🚀"
+          title="Slide 1"
+          description="This is the first slide"
+        ></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item
+          icon="⚡"
+          title="Slide 2"
+          description="This is the second slide"
+        ></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item
+          icon="🎨"
+          title="Slide 3"
+          description="This is the third slide"
+        ></carousel-item>
+      </div>
+    </swiper-carousel>
+
+    <div class="controls">
+      <button onclick="document.getElementById('testCarousel').prev()">← Previous</button>
+      <button onclick="document.getElementById('testCarousel').next()">Next →</button>
+      <button onclick="showIndex()">Show Index</button>
+    </div>
+
+    <div class="status" id="status">
+      Status: Initializing...
+    </div>
+  </div>
+
+  <script type="module">
+    import './src/index.ts';
+
+    const carousel = document.getElementById('testCarousel');
+    const status = document.getElementById('status');
+
+    // Wait for components to be defined
+    Promise.all([
+      customElements.whenDefined('swiper-carousel'),
+      customElements.whenDefined('carousel-item')
+    ]).then(() => {
+      status.textContent = '✅ Components loaded successfully!';
+      
+      // Listen for slide changes
+      carousel.addEventListener('slideChange', (e) => {
+        status.textContent = `Active slide: ${e.detail.activeIndex + 1}`;
+      });
+    });
+
+    window.showIndex = () => {
+      const index = carousel.activeIndex;
+      status.textContent = `Current slide index: ${index}`;
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiple Carousels - Focus Test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .instructions {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .instructions h2 {
+      margin-top: 0;
+      color: #856404;
+    }
+
+    .instructions ol {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .instructions li {
+      margin: 8px 0;
+    }
+
+    .carousel-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .carousel-section h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .carousel-section p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    swiper-carousel {
+      margin-bottom: 20px;
+    }
+
+    /* Carousel 1 - Blue theme */
+    #carousel1 {
+      --swiper-navigation-color: #2196f3;
+      --swiper-pagination-color: #2196f3;
+      --swiper-focus-color: #2196f3;
+    }
+
+    #carousel1 .swiper-slide {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Carousel 2 - Green theme */
+    #carousel2 {
+      --swiper-navigation-color: #4caf50;
+      --swiper-pagination-color: #4caf50;
+      --swiper-focus-color: #4caf50;
+    }
+
+    #carousel2 .swiper-slide {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    /* Carousel 3 - Orange theme */
+    #carousel3 {
+      --swiper-navigation-color: #ff9800;
+      --swiper-pagination-color: #ff9800;
+      --swiper-focus-color: #ff9800;
+    }
+
+    #carousel3 .swiper-slide {
+      background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+    }
+
+    .swiper-slide {
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      border-radius: 8px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .status {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .highlight {
+      background: #ffeb3b;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Keyboard Focus Test: Multiple Carousels</h1>
+    
+    <div class="instructions">
+      <h2>📋 Test Instructions</h2>
+      <ol>
+        <li>Click on any carousel or press <span class="highlight">Tab</span> to focus it</li>
+        <li>When focused, the carousel will show a colored outline</li>
+        <li>Use <span class="highlight">← →</span> arrow keys to navigate the <strong>focused</strong> carousel only</li>
+        <li>Press <span class="highlight">Tab</span> to move focus to the next carousel</li>
+        <li>Notice how only the focused carousel responds to arrow keys</li>
+      </ol>
+    </div>
+
+    <!-- Carousel 1 -->
+    <div class="carousel-section">
+      <h3>Carousel 1: Products (Blue Theme)</h3>
+      <p>Focus this carousel and use arrow keys to navigate</p>
+      
+      <swiper-carousel id="carousel1">
+        <div class="swiper-slide">📱 Product 1</div>
+        <div class="swiper-slide">💻 Product 2</div>
+        <div class="swiper-slide">⌚ Product 3</div>
+        <div class="swiper-slide">🎧 Product 4</div>
+      </swiper-carousel>
+
+      <div class="status" id="status1">Status: Not focused</div>
+    </div>
+
+    <!-- Carousel 2 -->
+    <div class="carousel-section">
+      <h3>Carousel 2: Nature (Green Theme)</h3>
+      <p>Focus this carousel and use arrow keys to navigate</p>
+      
+      <swiper-carousel id="carousel2" slides-per-view="2" space-between="20">
+        <div class="swiper-slide">🌲 Forest</div>
+        <div class="swiper-slide">🏔️ Mountain</div>
+        <div class="swiper-slide">🌊 Ocean</div>
+        <div class="swiper-slide">🌺 Garden</div>
+        <div class="swiper-slide">🌅 Sunrise</div>
+      </swiper-carousel>
+
+      <div class="status" id="status2">Status: Not focused</div>
+    </div>
+
+    <!-- Carousel 3 -->
+    <div class="carousel-section">
+      <h3>Carousel 3: Food (Orange Theme)</h3>
+      <p>Focus this carousel and use arrow keys to navigate</p>
+      
+      <swiper-carousel id="carousel3" loop autoplay="0">
+        <div class="swiper-slide">🍕 Pizza</div>
+        <div class="swiper-slide">🍔 Burger</div>
+        <div class="swiper-slide">🍜 Ramen</div>
+        <div class="swiper-slide">🍰 Cake</div>
+      </swiper-carousel>
+
+      <div class="status" id="status3">Status: Not focused</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import './src/index.ts';
+
+    // Wait for components to be defined
+    customElements.whenDefined('swiper-carousel').then(() => {
+      const carousels = [
+        { element: document.getElementById('carousel1'), status: document.getElementById('status1') },
+        { element: document.getElementById('carousel2'), status: document.getElementById('status2') },
+        { element: document.getElementById('carousel3'), status: document.getElementById('status3') }
+      ];
+
+      carousels.forEach(({ element, status }, index) => {
+        // Focus events
+        element.addEventListener('focus', () => {
+          status.textContent = `Status: ✅ FOCUSED - Arrow keys will control this carousel`;
+          status.style.background = '#c8e6c9';
+        });
+
+        element.addEventListener('blur', () => {
+          status.textContent = `Status: Not focused`;
+          status.style.background = '#e3f2fd';
+        });
+
+        // Slide change events
+        element.addEventListener('slideChange', (e) => {
+          if (document.activeElement === element) {
+            status.textContent = `Status: ✅ FOCUSED - Active slide: ${e.detail.activeIndex + 1}`;
+          }
+        });
+      });
+
+      console.log('✓ All carousels initialized');
+      console.log('💡 Try focusing each carousel and using arrow keys!');
+    });
+  </script>
+</body>
+</html>

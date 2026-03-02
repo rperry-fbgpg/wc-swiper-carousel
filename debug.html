@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carousel Debug</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 { color: #333; }
+    
+    .debug-info {
+      background: #f0f0f0;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    swiper-carousel {
+      margin: 40px 0;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .swiper-slide {
+      height: 300px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 12px 24px;
+      margin: 5px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #5568d3;
+    }
+
+    .controls {
+      margin: 20px 0;
+    }
+
+    #console {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 6px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .log-entry {
+      margin: 5px 0;
+    }
+
+    .log-info { color: #4fc3f7; }
+    .log-warn { color: #ffb74d; }
+    .log-error { color: #ef5350; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Carousel Debug Page</h1>
+  
+  <div class="debug-info">
+    <strong>Debug Console</strong> (watch for initialization messages)
+    <div id="console"></div>
+  </div>
+
+  <h2>Test Carousel</h2>
+  
+  <swiper-carousel id="carousel">
+    <div class="swiper-slide">Slide 1</div>
+    <div class="swiper-slide">Slide 2</div>
+    <div class="swiper-slide">Slide 3</div>
+    <div class="swiper-slide">Slide 4</div>
+  </swiper-carousel>
+
+  <div class="controls">
+    <button onclick="testPrev()">⬅ Previous</button>
+    <button onclick="testNext()">Next ➡</button>
+    <button onclick="testGoTo(0)">Go to First</button>
+    <button onclick="testGetIndex()">Get Current Index</button>
+    <button onclick="inspectDOM()">Inspect DOM</button>
+  </div>
+
+  <script type="module">
+    import './src/index.ts';
+
+    const consoleEl = document.getElementById('console');
+    
+    // Intercept console methods
+    const originalLog = console.log;
+    const originalWarn = console.warn;
+    const originalError = console.error;
+    
+    function addLogEntry(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry log-${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleEl.appendChild(entry);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+    
+    console.log = (...args) => {
+      originalLog.apply(console, args);
+      addLogEntry(args.join(' '), 'info');
+    };
+    
+    console.warn = (...args) => {
+      originalWarn.apply(console, args);
+      addLogEntry(args.join(' '), 'warn');
+    };
+    
+    console.error = (...args) => {
+      originalError.apply(console, args);
+      addLogEntry(args.join(' '), 'error');
+    };
+
+    // Wait for carousel to be defined
+    customElements.whenDefined('swiper-carousel').then(() => {
+      console.log('✓ swiper-carousel component is defined');
+      
+      const carousel = document.getElementById('carousel');
+      
+      // Listen for slide changes
+      carousel.addEventListener('slideChange', (e) => {
+        console.log(`Slide changed: activeIndex=${e.detail.activeIndex}, previousIndex=${e.detail.previousIndex}`);
+      });
+      
+      // Check after a moment if swiper initialized
+      setTimeout(() => {
+        if (carousel.swiper) {
+          console.log('✓ Swiper instance exists');
+        } else {
+          console.error('✗ Swiper instance not found');
+        }
+      }, 1000);
+    });
+
+    window.testPrev = () => {
+      const carousel = document.getElementById('carousel');
+      console.log('Calling prev()...');
+      carousel.prev();
+    };
+
+    window.testNext = () => {
+      const carousel = document.getElementById('carousel');
+      console.log('Calling next()...');
+      carousel.next();
+    };
+
+    window.testGoTo = (index) => {
+      const carousel = document.getElementById('carousel');
+      console.log(`Calling slideTo(${index})...`);
+      carousel.slideTo(index);
+    };
+
+    window.testGetIndex = () => {
+      const carousel = document.getElementById('carousel');
+      console.log(`Current activeIndex: ${carousel.activeIndex}`);
+    };
+
+    window.inspectDOM = () => {
+      const carousel = document.getElementById('carousel');
+      console.log('=== DOM Inspection ===');
+      console.log(`Light DOM children: ${carousel.children.length}`);
+      console.log(`Shadow root exists: ${!!carousel.shadowRoot}`);
+      
+      if (carousel.shadowRoot) {
+        const wrapper = carousel.shadowRoot.querySelector('.swiper-wrapper');
+        console.log(`Shadow DOM wrapper children: ${wrapper?.children.length || 0}`);
+        console.log(`Swiper slides: ${carousel.shadowRoot.querySelectorAll('.swiper-slide').length}`);
+      }
+      
+      if (carousel.swiper) {
+        console.log(`Swiper slides array length: ${carousel.swiper.slides.length}`);
+        console.log(`Swiper activeIndex: ${carousel.swiper.activeIndex}`);
+      }
+    };
+  </script>
+</body>
+</html>

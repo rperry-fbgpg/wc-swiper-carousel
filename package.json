@@ -1,0 +1,43 @@
+{
+  "name": "wc-swiper-carousel",
+  "version": "1.0.0",
+  "description": "A carousel web component built with Lit and Swiperjs",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "keywords": [
+    "web-components",
+    "lit",
+    "swiper",
+    "carousel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "lit": "^3.1.0",
+    "swiper": "^11.0.5"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^8.0.0",
+    "@storybook/addon-links": "^8.0.0",
+    "@storybook/blocks": "^8.0.0",
+    "@storybook/web-components": "^8.0.0",
+    "@storybook/web-components-vite": "^8.0.0",
+    "@types/node": "^20.10.6",
+    "@vitest/browser-playwright": "^4.0.18",
+    "@vitest/coverage-v8": "^4.0.18",
+    "playwright": "^1.58.2",
+    "storybook": "^8.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^4.0.18"
+  }
+}
