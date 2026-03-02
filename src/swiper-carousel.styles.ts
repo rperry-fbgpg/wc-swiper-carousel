@@ -50,6 +50,13 @@ export const swiperCarouselStyles = css`
 
   .swiper-button-prev,
   .swiper-button-next {
+    /* Button reset */
+    border: none;
+    padding: 0;
+    font: inherit;
+    outline: inherit;
+    
+    /* Positioning and size */
     position: absolute;
     top: 50%;
     width: var(--swiper-navigation-size, 44px);
@@ -57,9 +64,13 @@ export const swiperCarouselStyles = css`
     margin-top: calc(-1 * var(--swiper-navigation-size, 44px) / 2);
     z-index: 10;
     cursor: pointer;
+    
+    /* Layout */
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    /* Appearance */
     color: var(--swiper-navigation-color, #007aff);
     background: var(--swiper-navigation-bg, rgba(255, 255, 255, 0.9));
     border-radius: 50%;

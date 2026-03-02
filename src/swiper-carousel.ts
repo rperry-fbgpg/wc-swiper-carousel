@@ -381,8 +381,8 @@ export class SwiperCarousel extends LitElement {
         </div>
         ${this.navigation
           ? html`
-              <div class="swiper-button-prev" part="button-prev" aria-label="Previous slide"></div>
-              <div class="swiper-button-next" part="button-next" aria-label="Next slide"></div>
+              <button class="swiper-button-prev" part="button-prev" aria-label="Previous slide" type="button"></button>
+              <button class="swiper-button-next" part="button-next" aria-label="Next slide" type="button"></button>
             `
           : ''}
         ${this.pagination
