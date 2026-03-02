@@ -144,4 +144,44 @@ export const swiperCarouselStyles = css`
     opacity: 1;
     transform: scale(1.3);
   }
+
+  .autoplay-control {
+    /* Button reset */
+    border: none;
+    padding: 0;
+    font: inherit;
+    outline: inherit;
+    
+    /* Positioning and size */
+    position: relative;
+    margin-top: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* Appearance */
+    color: var(--swiper-navigation-color, #007aff);
+    background: var(--swiper-navigation-bg, rgba(255, 255, 255, 0.9));
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    font-size: 16px;
+  }
+
+  .autoplay-control:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .autoplay-control:focus-visible {
+    outline: 2px solid var(--swiper-focus-color, #007aff);
+    outline-offset: 2px;
+  }
 `;

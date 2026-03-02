@@ -263,7 +263,8 @@
       <swiper-carousel 
         id="carousel3"
         loop
-        autoplay="3000"
+        navigation="true"
+        pagination="true"
       >
         <div class="swiper-slide">
           <carousel-item
@@ -296,17 +297,76 @@
       </swiper-carousel>
 
       <div class="info">
-        <strong>Auto-play:</strong> This carousel automatically advances every 3 seconds. It also loops infinitely.
+        <strong>Loop Mode:</strong> Navigate past the last slide to smoothly wrap back to the first, or go backwards from the first to reach the last. Perfect for continuous browsing.
       </div>
     </div>
 
-    <!-- Demo 4: Custom Content -->
+    <!-- Demo 4: Autoplay -->
+    <div class="demo-section">
+      <h2>Autoplay</h2>
+      <p>Automatically advance slides with configurable delay. Includes pause on hover and interaction controls.</p>
+      
+      <swiper-carousel 
+        id="carousel4"
+        autoplay="2500"
+        loop
+        pagination="true"
+        navigation="true"
+      >
+        <div class="swiper-slide">
+          <carousel-item
+            icon="▶️"
+            title="Autoplay"
+            description="Slides automatically advance every 2.5 seconds."
+          ></carousel-item>
+        </div>
+        <div class="swiper-slide">
+          <carousel-item
+            icon="⏸️"
+            title="Pause on Hover"
+            description="Hover over the carousel to pause autoplay."
+          ></carousel-item>
+        </div>
+        <div class="swiper-slide">
+          <carousel-item
+            icon="🔄"
+            title="Loop Mode"
+            description="Automatically loops back to the first slide."
+          ></carousel-item>
+        </div>
+        <div class="swiper-slide">
+          <carousel-item
+            icon="🎬"
+            title="Interactive"
+            description="Manual navigation pauses autoplay temporarily."
+          ></carousel-item>
+        </div>
+        <div class="swiper-slide">
+          <carousel-item
+            icon="⚡"
+            title="Smooth"
+            description="Seamless transitions between slides."
+          ></carousel-item>
+        </div>
+      </swiper-carousel>
+
+      <div class="controls">
+        <button onclick="document.getElementById('carousel4').swiper.autoplay.start()">▶️ Start Autoplay</button>
+        <button onclick="document.getElementById('carousel4').swiper.autoplay.stop()">⏸️ Stop Autoplay</button>
+      </div>
+
+      <div class="info">
+        <strong>Autoplay:</strong> This carousel automatically advances every 2.5 seconds. Hover over it to pause, or use the controls above to start/stop autoplay manually.
+      </div>
+    </div>
+
+    <!-- Demo 5: Custom Content -->
     <div class="demo-section">
       <h2>Custom Content</h2>
       <p>You can put any web component or HTML content in the carousel.</p>
       
       <swiper-carousel 
-        id="carousel4"
+        id="carousel5"
         navigation="false"
       >
         <div class="swiper-slide">

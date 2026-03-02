@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autoplay Pagination Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 40px;
+      background: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 32px;
+      margin-bottom: 32px;
+      border-radius: 8px;
+    }
+    carousel-item {
+      --item-bg-color: #e3f2fd;
+      --item-title-color: #1565c0;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-section">
+    <h2>Autoplay WITH Pagination</h2>
+    <swiper-carousel 
+      id="test1"
+      autoplay="2500"
+      loop
+      pagination="true"
+      navigation="true"
+    >
+      <div class="swiper-slide">
+        <carousel-item icon="1️⃣" title="Slide 1" description="First slide"></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item icon="2️⃣" title="Slide 2" description="Second slide"></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item icon="3️⃣" title="Slide 3" description="Third slide"></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item icon="4️⃣" title="Slide 4" description="Fourth slide"></carousel-item>
+      </div>
+    </swiper-carousel>
+  </div>
+
+  <div class="test-section">
+    <h2>NO Autoplay WITH Pagination (Control)</h2>
+    <swiper-carousel 
+      id="test2"
+      loop
+      pagination="true"
+      navigation="true"
+    >
+      <div class="swiper-slide">
+        <carousel-item icon="1️⃣" title="Slide 1" description="First slide"></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item icon="2️⃣" title="Slide 2" description="Second slide"></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item icon="3️⃣" title="Slide 3" description="Third slide"></carousel-item>
+      </div>
+      <div class="swiper-slide">
+        <carousel-item icon="4️⃣" title="Slide 4" description="Fourth slide"></carousel-item>
+      </div>
+    </swiper-carousel>
+  </div>
+
+  <script type="module" src="/src/index.ts"></script>
+  
+  <script>
+    // Add some debugging
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const test1 = document.getElementById('test1');
+        const test2 = document.getElementById('test2');
+        
+        console.log('Test 1 (autoplay) pagination:', test1.shadowRoot.querySelector('.swiper-pagination'));
+        console.log('Test 1 bullets:', test1.shadowRoot.querySelectorAll('.swiper-pagination-bullet'));
+        
+        console.log('Test 2 (no autoplay) pagination:', test2.shadowRoot.querySelector('.swiper-pagination'));
+        console.log('Test 2 bullets:', test2.shadowRoot.querySelectorAll('.swiper-pagination-bullet'));
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

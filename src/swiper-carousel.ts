@@ -21,6 +21,7 @@ import 'swiper/css/pagination';
  * @csspart button-prev - Previous navigation button
  * @csspart button-next - Next navigation button
  * @csspart pagination - Pagination container
+ * @csspart autoplay-control - Autoplay pause/play button (shown when autoplay is enabled)
  */
 @customElement('swiper-carousel')
 export class SwiperCarousel extends LitElement {
@@ -92,6 +93,7 @@ export class SwiperCarousel extends LitElement {
 
   private swiper: Swiper | null = null;
   private isFocused = false;
+  private isAutoplayRunning = false;
 
   private syncPagination(swiperInstance?: Swiper) {
     const swiper = swiperInstance ?? this.swiper;
@@ -306,13 +308,20 @@ export class SwiperCarousel extends LitElement {
         clickable: true,
         type: 'bullets',
       };
+      console.log('Pagination config:', {
+        el: this.paginationEl,
+        classList: this.paginationEl.classList.toString(),
+        parent: this.paginationEl.parentElement?.classList.toString(),
+      });
     }
 
     if (this.autoplay > 0) {
       config.autoplay = {
         delay: this.autoplay,
         disableOnInteraction: false,
+        pauseOnMouseEnter: true,
       };
+      this.isAutoplayRunning = true;
     }
 
     if (Object.keys(breakpointsConfig).length > 0) {
@@ -321,6 +330,15 @@ export class SwiperCarousel extends LitElement {
 
     this.swiper = new Swiper(this.swiperContainer, config);
     this.syncPagination(this.swiper);
+    
+    // Update autoplay button if it exists
+    if (this.autoplay > 0) {
+      const autoplayBtn = this.shadowRoot?.querySelector('.autoplay-control') as HTMLButtonElement;
+      if (autoplayBtn && this.isAutoplayRunning) {
+        autoplayBtn.textContent = '⏸️';
+        autoplayBtn.setAttribute('aria-label', 'Pause automatic slide rotation');
+      }
+    }
 
     console.log('Swiper initialized:', {
       slides: this.swiper.slides.length,
@@ -328,7 +346,10 @@ export class SwiperCarousel extends LitElement {
       navigation: !!config.navigation,
       navigationElements: { next: !!this.buttonNext, prev: !!this.buttonPrev },
       pagination: !!config.pagination,
-      paginationElement: !!this.paginationEl
+      paginationElement: !!this.paginationEl,
+      paginationBullets: this.paginationEl?.querySelectorAll('.swiper-pagination-bullet').length,
+      autoplay: this.autoplay,
+      isAutoplayRunning: this.isAutoplayRunning,
     });
 
     // Set ARIA attributes
@@ -341,6 +362,7 @@ export class SwiperCarousel extends LitElement {
     if (this.swiper) {
       this.swiper.destroy(true, true);
       this.swiper = null;
+      this.isAutoplayRunning = false;
     }
   }
 
@@ -373,6 +395,27 @@ export class SwiperCarousel extends LitElement {
     return this.swiper?.realIndex ?? 0;
   }
 
+  /**
+   * Toggle autoplay pause/play
+   */
+  private toggleAutoplay(e: Event) {
+    if (!this.swiper?.autoplay) return;
+
+    const button = e.currentTarget as HTMLButtonElement;
+    
+    if (this.isAutoplayRunning) {
+      this.swiper.autoplay.stop();
+      this.isAutoplayRunning = false;
+      button.textContent = '▶️';
+      button.setAttribute('aria-label', 'Start automatic slide rotation');
+    } else {
+      this.swiper.autoplay.start();
+      this.isAutoplayRunning = true;
+      button.textContent = '⏸️';
+      button.setAttribute('aria-label', 'Pause automatic slide rotation');
+    }
+  }
+
   render() {
     return html`
       <div class="swiper" part="container">
@@ -381,12 +424,25 @@ export class SwiperCarousel extends LitElement {
         </div>
         ${this.navigation
           ? html`
-              <button class="swiper-button-prev" part="button-prev" aria-label="Previous slide" type="button"></button>
-              <button class="swiper-button-next" part="button-next" aria-label="Next slide" type="button"></button>
+              <button class="swiper-button-prev" part="button-prev" aria-label="Previous slide" type="button">Prev</button>
+              <button class="swiper-button-next" part="button-next" aria-label="Next slide" type="button">Next</button>
             `
           : ''}
         ${this.pagination
           ? html`<div class="swiper-pagination" part="pagination" role="group" aria-label="Slide navigation"></div>`
+          : ''}
+        ${this.autoplay > 0 && this.pagination
+          ? html`
+              <button
+                class="autoplay-control"
+                part="autoplay-control"
+                aria-label="${this.isAutoplayRunning ? 'Pause automatic slide rotation' : 'Start automatic slide rotation'}"
+                @click=${this.toggleAutoplay}
+                type="button"
+              >
+                ${this.isAutoplayRunning ? '⏸️' : '▶️'}
+              </button>
+            `
           : ''}
       </div>
     `;
