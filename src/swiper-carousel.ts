@@ -2,10 +2,11 @@ import { LitElement, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { swiperCarouselStyles } from './swiper-carousel.styles.js';
 import Swiper from 'swiper';
-import { Navigation, Pagination, A11y, Keyboard, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, A11y, Keyboard, Autoplay, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 /**
  * A carousel web component built with Lit and Swiper.js
@@ -68,6 +69,12 @@ export class SwiperCarousel extends LitElement {
    */
   @property({ type: Boolean })
   keyboard = true;
+
+  /**
+   * Enable fade effect (crossfade between slides)
+   */
+  @property({ type: Boolean })
+  fade = false;
 
   /**
    * Slides per view at different breakpoints (JSON string)
@@ -165,6 +172,7 @@ export class SwiperCarousel extends LitElement {
       changedProperties.has('loop') ||
       changedProperties.has('autoplay') ||
       changedProperties.has('keyboard') ||
+      changedProperties.has('fade') ||
       changedProperties.has('breakpoints')
     ) {
       this.destroySwiper();
@@ -253,10 +261,14 @@ export class SwiperCarousel extends LitElement {
     }
 
     const config: any = {
-      modules: [Navigation, Pagination, A11y, Keyboard, Autoplay],
-      slidesPerView: this.slidesPerView,
+      modules: [Navigation, Pagination, A11y, Keyboard, Autoplay, ...(this.fade ? [EffectFade] : [])],
+      slidesPerView: this.fade ? 1 : this.slidesPerView,
       spaceBetween: this.spaceBetween,
       loop: this.loop,
+      effect: this.fade ? 'fade' : 'slide',
+      fadeEffect: this.fade ? {
+        crossFade: true
+      } : undefined,
       keyboard: this.keyboard ? {
         enabled: true,
         onlyInViewport: true,
@@ -308,11 +320,6 @@ export class SwiperCarousel extends LitElement {
         clickable: true,
         type: 'bullets',
       };
-      console.log('Pagination config:', {
-        el: this.paginationEl,
-        classList: this.paginationEl.classList.toString(),
-        parent: this.paginationEl.parentElement?.classList.toString(),
-      });
     }
 
     if (this.autoplay > 0) {
@@ -339,18 +346,6 @@ export class SwiperCarousel extends LitElement {
         autoplayBtn.setAttribute('aria-label', 'Pause automatic slide rotation');
       }
     }
-
-    console.log('Swiper initialized:', {
-      slides: this.swiper.slides.length,
-      activeIndex: this.swiper.activeIndex,
-      navigation: !!config.navigation,
-      navigationElements: { next: !!this.buttonNext, prev: !!this.buttonPrev },
-      pagination: !!config.pagination,
-      paginationElement: !!this.paginationEl,
-      paginationBullets: this.paginationEl?.querySelectorAll('.swiper-pagination-bullet').length,
-      autoplay: this.autoplay,
-      isAutoplayRunning: this.isAutoplayRunning,
-    });
 
     // Set ARIA attributes
     this.setAttribute('role', 'region');
