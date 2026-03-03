@@ -9,13 +9,13 @@ export const swiperCarouselStyles = css`
   }
 
   :host(:focus) {
-    outline: 3px solid var(--swiper-focus-color, #007aff);
+    /* outline: 3px solid var(--swiper-focus-color, #007aff); */
     outline-offset: 4px;
     border-radius: 4px;
   }
 
   :host(:focus-visible) {
-    outline: 3px solid var(--swiper-focus-color, #007aff);
+    /* outline: 3px solid var(--swiper-focus-color, #007aff); */
     outline-offset: 4px;
     border-radius: 4px;
   }
