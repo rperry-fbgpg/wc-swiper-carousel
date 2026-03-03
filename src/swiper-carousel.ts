@@ -104,9 +104,14 @@ export class SwiperCarousel extends LitElement {
 
   private syncPagination(swiperInstance?: Swiper) {
     const swiper = swiperInstance ?? this.swiper;
-    if (!swiper || !this.pagination || !swiper.pagination) return;
+    if (!swiper || !this.pagination || !swiper.pagination) {
+      return;
+    }
 
-    swiper.updateSlidesClasses();
+    // updateSlidesClasses is for slide mode; skip it in fade mode to avoid conflicts
+    if (!this.fade) {
+      swiper.updateSlidesClasses();
+    }
     swiper.pagination.render();
     swiper.pagination.update();
   }
@@ -285,8 +290,10 @@ export class SwiperCarousel extends LitElement {
         init: (swiper: Swiper) => {
           this.syncPagination(swiper);
         },
-        slideChange: (swiper: Swiper) => {
+        realIndexChange: (swiper: Swiper) => {
           this.syncPagination(swiper);
+        },
+        slideChange: (swiper: Swiper) => {
           this.dispatchEvent(
             new CustomEvent('slideChange', {
               detail: {
@@ -299,9 +306,6 @@ export class SwiperCarousel extends LitElement {
           );
         },
         transitionEnd: (swiper: Swiper) => {
-          this.syncPagination(swiper);
-        },
-        touchEnd: (swiper: Swiper) => {
           this.syncPagination(swiper);
         },
       },
