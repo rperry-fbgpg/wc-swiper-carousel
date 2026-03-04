@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { swiperCarouselStyles } from './swiper-carousel.styles.js';
 import Swiper from 'swiper';
 import { Navigation, Pagination, A11y, Keyboard, Autoplay, EffectFade } from 'swiper/modules';
@@ -11,7 +11,7 @@ import 'swiper/css/effect-fade';
 /**
  * A carousel web component built with Lit and Swiper.js
  * 
- * Add carousel items as direct children (wrapped in div.swiper-slide elements).
+ * Add carousel items as direct children (wrapped in div.carousel-slide elements).
  * The component will automatically move them into the shadow DOM for Swiper to manage.
  * 
  * @fires slideChange - Fired when the active slide changes
@@ -100,7 +100,9 @@ export class SwiperCarousel extends LitElement {
 
   private swiper: Swiper | null = null;
   private isFocused = false;
-  private isAutoplayRunning = false;
+  private userPaused = false;
+  private hoverPaused = false;
+  @state() private isAutoplayRunning = false;
 
   private syncPagination(swiperInstance?: Swiper) {
     const swiper = swiperInstance ?? this.swiper;
@@ -204,9 +206,9 @@ export class SwiperCarousel extends LitElement {
     
     while (this.children.length > 0) {
       const child = this.children[0];
-      // Ensure it has swiper-slide class
-      if (!child.classList.contains('swiper-slide')) {
-        child.classList.add('swiper-slide');
+      // Ensure it has carousel-slide class
+      if (!child.classList.contains('carousel-slide')) {
+        child.classList.add('carousel-slide');
       }
       this.swiperWrapper.appendChild(child);
     }
@@ -235,7 +237,7 @@ export class SwiperCarousel extends LitElement {
     if (!this.swiperContainer || !this.swiperWrapper) return;
 
     // Check if we have slides before initializing
-    const slides = this.swiperWrapper.querySelectorAll('.swiper-slide');
+    const slides = this.swiperWrapper.querySelectorAll('.carousel-slide');
     if (slides.length === 0) {
       console.warn('No slides found in carousel. Make sure to add slide elements.');
       return;
@@ -267,6 +269,7 @@ export class SwiperCarousel extends LitElement {
 
     const config: any = {
       modules: [Navigation, Pagination, A11y, Keyboard, Autoplay, ...(this.fade ? [EffectFade] : [])],
+      slideClass: 'carousel-slide',
       slidesPerView: this.fade ? 1 : this.slidesPerView,
       spaceBetween: this.spaceBetween,
       loop: this.loop,
@@ -308,6 +311,12 @@ export class SwiperCarousel extends LitElement {
         transitionEnd: (swiper: Swiper) => {
           this.syncPagination(swiper);
         },
+        autoplayStart: () => {
+          this.isAutoplayRunning = true;
+        },
+        autoplayStop: () => {
+          this.isAutoplayRunning = false;
+        },
       },
     };
 
@@ -330,7 +339,7 @@ export class SwiperCarousel extends LitElement {
       config.autoplay = {
         delay: this.autoplay,
         disableOnInteraction: false,
-        pauseOnMouseEnter: true,
+        pauseOnMouseEnter: false,
       };
       this.isAutoplayRunning = true;
     }
@@ -341,15 +350,10 @@ export class SwiperCarousel extends LitElement {
 
     this.swiper = new Swiper(this.swiperContainer, config);
     this.syncPagination(this.swiper);
-    
-    // Update autoplay button if it exists
-    if (this.autoplay > 0) {
-      const autoplayBtn = this.shadowRoot?.querySelector('.autoplay-control') as HTMLButtonElement;
-      if (autoplayBtn && this.isAutoplayRunning) {
-        autoplayBtn.textContent = '⏸️';
-        autoplayBtn.setAttribute('aria-label', 'Pause automatic slide rotation');
-      }
-    }
+
+    // Hover-pause: implemented manually so it doesn't conflict with user-controlled stop/start
+    this.swiperContainer.addEventListener('pointerenter', this.handlePointerEnter);
+    this.swiperContainer.addEventListener('pointerleave', this.handlePointerLeave);
 
     // Set ARIA attributes
     this.setAttribute('role', 'region');
@@ -357,10 +361,28 @@ export class SwiperCarousel extends LitElement {
     this.setAttribute('aria-roledescription', 'carousel');
   }
 
+  private handlePointerEnter = (e: PointerEvent) => {
+    if (e.pointerType !== 'mouse') return;
+    if (this.userPaused || !this.swiper?.autoplay.running) return;
+    this.hoverPaused = true;
+    this.swiper.autoplay.stop();
+  };
+
+  private handlePointerLeave = (e: PointerEvent) => {
+    if (e.pointerType !== 'mouse') return;
+    if (!this.hoverPaused) return;
+    this.hoverPaused = false;
+    this.swiper?.autoplay.start();
+  };
+
   private destroySwiper() {
     if (this.swiper) {
+      this.swiperContainer?.removeEventListener('pointerenter', this.handlePointerEnter);
+      this.swiperContainer?.removeEventListener('pointerleave', this.handlePointerLeave);
       this.swiper.destroy(true, true);
       this.swiper = null;
+      this.userPaused = false;
+      this.hoverPaused = false;
       this.isAutoplayRunning = false;
     }
   }
@@ -397,21 +419,16 @@ export class SwiperCarousel extends LitElement {
   /**
    * Toggle autoplay pause/play
    */
-  private toggleAutoplay(e: Event) {
-    if (!this.swiper?.autoplay) return;
+  private toggleAutoplay() {
+    if (!this.swiper) return;
 
-    const button = e.currentTarget as HTMLButtonElement;
-    
     if (this.isAutoplayRunning) {
+      this.userPaused = true;
+      this.hoverPaused = false;
       this.swiper.autoplay.stop();
-      this.isAutoplayRunning = false;
-      button.textContent = '▶️';
-      button.setAttribute('aria-label', 'Start automatic slide rotation');
     } else {
+      this.userPaused = false;
       this.swiper.autoplay.start();
-      this.isAutoplayRunning = true;
-      button.textContent = '⏸️';
-      button.setAttribute('aria-label', 'Pause automatic slide rotation');
     }
   }
 
@@ -430,20 +447,20 @@ export class SwiperCarousel extends LitElement {
         ${this.pagination
           ? html`<div class="swiper-pagination" part="pagination" role="group" aria-label="Slide navigation"></div>`
           : ''}
-        ${this.autoplay > 0 && this.pagination
-          ? html`
-              <button
-                class="autoplay-control"
-                part="autoplay-control"
-                aria-label="${this.isAutoplayRunning ? 'Pause automatic slide rotation' : 'Start automatic slide rotation'}"
-                @click=${this.toggleAutoplay}
-                type="button"
-              >
-                ${this.isAutoplayRunning ? '⏸️' : '▶️'}
-              </button>
-            `
-          : ''}
       </div>
+      ${this.autoplay > 0
+        ? html`
+            <button
+              class="autoplay-control"
+              part="autoplay-control"
+              aria-label="${this.isAutoplayRunning ? 'Pause automatic slide rotation' : 'Start automatic slide rotation'}"
+              @click=${this.toggleAutoplay}
+              type="button"
+            >
+              ${this.isAutoplayRunning ? '⏸️' : '▶️'}
+            </button>
+          `
+        : ''}
     `;
   }
 }

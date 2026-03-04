@@ -40,7 +40,7 @@ export const swiperCarouselStyles = css`
     box-sizing: content-box;
   }
 
-  .swiper-slide {
+  .carousel-slide {
     flex-shrink: 0;
     width: 100%;
     height: 100%;
